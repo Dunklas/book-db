@@ -19,4 +19,4 @@ RUN apt-get update -y && \
     apt-get install -y libpq-dev
 
 COPY --from=builder /book-db/target/release/book-db book-db
-CMD ["./book-db"]
+CMD ["/bin/bash", "-c", "ROCKET_PORT=$PORT ROCKET_DATABASES={book_db={url=$DATABASE_URL}} ./book-db"]
