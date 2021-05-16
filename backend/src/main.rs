@@ -2,13 +2,13 @@
 #[macro_use] extern crate rocket;
 
 use rocket_contrib::json::Json;
-use rocket_contrib::databases::{database, postgres};
+use rocket_contrib::databases::{database, diesel};
 
 mod book;
 use book::Book;
 
 #[database("book_db")]
-struct BookDb(postgres::Connection);
+struct BookDb(diesel::PgConnection);
 
 #[post("/", format = "application/json", data = "<book>")]
 fn create_book(book: Json<Book>) -> Json<Book> {
