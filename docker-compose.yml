@@ -4,3 +4,12 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+    restart: always
+    environment:
+      ROCKET_DATABASES: '{book_db={url="postgres://postgres:password@db/postgres"}}'
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password

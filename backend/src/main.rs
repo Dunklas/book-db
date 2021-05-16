@@ -2,9 +2,13 @@
 #[macro_use] extern crate rocket;
 
 use rocket_contrib::json::Json;
+use rocket_contrib::databases::{database, postgres};
 
 mod book;
 use book::Book;
+
+#[database("book_db")]
+struct BookDb(postgres::Connection);
 
 #[post("/", format = "application/json", data = "<book>")]
 fn create_book(book: Json<Book>) -> Json<Book> {
@@ -22,8 +26,11 @@ fn get_books() -> Json<Vec<Book>> {
 }
 
 fn main() {
-    rocket::ignite().mount("/books", routes![
-        create_book,
-        get_books,
-    ]).launch();
+    rocket::ignite()
+        .attach(BookDb::fairing())
+        .mount("/books", routes![
+            create_book,
+            get_books,
+        ])
+        .launch();
 }
