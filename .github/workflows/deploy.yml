@@ -8,12 +8,13 @@ on:
 jobs:
   deploy-backend:
     runs-on: ubuntu-latest
+    env:
+      HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
+      APP_NAME: cryptic-anchorage-09442
     steps:
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "cryptic-anchorage-09442"
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          usedocker: true
-          appdir: "backend"
+      - run: docker build -t book-db backend/ 
+      - run: docker tag book-db registry.heroku.com/$APP_NAME/web
+      - run: heroku container:login
+      - run: docker push registry.heroku.com/$APP_NAME/webdocker
+      - run: heroku container:release -a $APP_NAME web
