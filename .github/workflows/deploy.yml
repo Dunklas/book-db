@@ -16,5 +16,5 @@ jobs:
       - run: docker build -t book-db backend/ 
       - run: docker tag book-db registry.heroku.com/$APP_NAME/web
       - run: heroku container:login
-      - run: docker push registry.heroku.com/$APP_NAME/webdocker
+      - run: docker push registry.heroku.com/$APP_NAME/web
       - run: heroku container:release -a $APP_NAME web
