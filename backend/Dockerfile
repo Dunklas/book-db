@@ -1,6 +1,22 @@
-FROM rust:latest
-WORKDIR /usr/src/book-db
+FROM rust:latest as builder
+
+RUN USER=root cargo new --bin book-db
+WORKDIR ./book-db
 RUN rustup override set nightly
-COPY . .
-RUN cargo install --path .
-ENTRYPOINT book-db
+COPY ./Cargo.toml ./Cargo.toml
+RUN cargo build --release
+RUN rm src/*.rs
+
+ADD . ./
+
+RUN rm ./target/release/deps/book_db*
+RUN cargo build --release
+
+
+FROM debian:buster-slim
+
+RUN apt-get update -y && \
+    apt-get install -y libpq-dev
+
+COPY --from=builder /book-db/target/release/book-db book-db
+CMD ["./book-db"]

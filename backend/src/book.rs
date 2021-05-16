@@ -4,5 +4,4 @@ use serde::{Serialize, Deserialize};
 pub struct Book {
     pub title: String,
     pub author: String,
-    pub comment: String
 }
