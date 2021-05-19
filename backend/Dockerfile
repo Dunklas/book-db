@@ -1,4 +1,4 @@
-FROM rust:latest as builder
+FROM rust:1.52.1 as builder
 
 RUN USER=root cargo new --bin book-db
 WORKDIR ./book-db
