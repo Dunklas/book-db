@@ -27,12 +27,11 @@ jobs:
         with:
           context: backend
           push: false
-          tags: "registry.heroku.com/$APP_NAME/web"
+          tags: registry.heroku.com/cryptic-anchorage-09442/web:latest
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
       - run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       - run: heroku container:login
-      - run: docker push registry.heroku.com/$APP_NAME/web
       - run: heroku container:release -a $APP_NAME web
