@@ -1,4 +1,3 @@
-#![feature(proc_macro_hygiene, decl_macro)]
 #[macro_use] extern crate rocket;
 #[macro_use] extern crate diesel_migrations;
 #[macro_use] extern crate diesel;
@@ -7,7 +6,7 @@ mod book;
 use book::{NewBook, Book};
 mod schema;
 
-use rocket::Rocket;
+use rocket::{Rocket, Build};
 use rocket::fairing::AdHoc;
 use rocket_contrib::json::Json;
 use rocket_contrib::databases::{database, diesel as rocket_contrib_diesel};
@@ -31,35 +30,42 @@ fn insert_book(conn: &diesel::PgConnection, book: &NewBook) -> Book {
 }
 
 #[post("/", format = "application/json", data = "<book>")]
-fn create_book(book: Json<NewBook>, db: BookDb) -> Json<Book> {
-    Json(insert_book(&*db, &book.into_inner()))
+async fn create_book(book: Json<NewBook>, db: BookDb) -> Json<Book> {
+    db.run(|connection| {
+        Json(insert_book(&connection, &book.into_inner()))
+    }).await
 }
 
 #[get("/", format = "application/json")]
-fn get_books(db: BookDb) -> Json<Vec<Book>> {
-    let books = load_from_db(&*db);
-    Json(books)
+async fn get_books(db: BookDb) -> Json<Vec<Book>> {
+    db.run(|connection| {
+        Json(load_from_db(&connection))
+    }).await
 }
 
-fn run_db_migrations(rocket: Rocket) -> Result<Rocket, Rocket> {
+async fn run_db_migrations(rocket: Rocket<Build>) -> Rocket<Build> {
     embed_migrations!();
-    let conn = BookDb::get_one(&rocket)
+    let conn = BookDb::get_one(&rocket).await
         .expect("Database connection");
-    match embedded_migrations::run(&*conn) {
-        Ok(()) => Ok(rocket),
-        Err(_e) => {
-            Err(rocket)
+    conn.run(|c| {
+        match embedded_migrations::run(c) {
+            Ok(()) => rocket,
+            Err(_e) => {
+                rocket
+            }
         }
-    }
+    }).await
 }
 
-fn main() {
-    rocket::ignite()
+#[rocket::main]
+async fn main() {
+    rocket::build()
         .attach(BookDb::fairing())
-        .attach(AdHoc::on_attach("Database migrations", run_db_migrations))
+        .attach(AdHoc::on_ignite("Database migrations", run_db_migrations))
         .mount("/books", routes![
             create_book,
             get_books,
         ])
-        .launch();
+        .launch()
+        .await;
 }

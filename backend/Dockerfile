@@ -2,7 +2,6 @@ FROM rust:latest as builder
 
 RUN USER=root cargo new --bin book-db
 WORKDIR ./book-db
-RUN rustup override set nightly
 COPY ./Cargo.toml ./Cargo.toml
 RUN cargo build --release
 RUN rm src/*.rs
