@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-      HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       APP_NAME: cryptic-anchorage-09442
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx
       - run: |
-          echo $HEROKU_AUTH_TOKEN | docker login --username=$HEROKU_EMAIL --password-stdin registry.heroku.com
+          echo $HEROKU_API_KEY | docker login --username=$HEROKU_EMAIL --password-stdin registry.heroku.com
       - uses: docker/build-push-action@v2
         with:
           context: backend
