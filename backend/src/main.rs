@@ -45,15 +45,15 @@ async fn delete_book(book_id: i32, db: BookDb) {
     }).await;
 }
 
-async fn run_db_migrations(rocket: Rocket<Build>) -> Rocket<Build> {
+async fn run_db_migrations(rocket: Rocket<Build>) -> Result<Rocket<Build>, Rocket<Build>> {
     embed_migrations!();
-    let conn = BookDb::get_one(&rocket).await
+    let db = BookDb::get_one(&rocket).await
         .expect("Database connection");
-    conn.run(|c| {
+    db.run(|c| {
         match embedded_migrations::run(c) {
-            Ok(()) => rocket,
+            Ok(()) => Ok(rocket),
             Err(_e) => {
-                rocket
+                Err(rocket)
             }
         }
     }).await
@@ -63,7 +63,7 @@ async fn run_db_migrations(rocket: Rocket<Build>) -> Rocket<Build> {
 async fn main() {
     rocket::build()
         .attach(BookDb::fairing())
-        .attach(AdHoc::on_ignite("Database migrations", run_db_migrations))
+        .attach(AdHoc::try_on_ignite("Database migrations", run_db_migrations))
         .mount("/books", routes![
             create_book,
             get_books,
