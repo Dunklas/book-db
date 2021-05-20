@@ -30,9 +30,10 @@ jobs:
         with:
           context: backend
           push: true
-          tags: registry.heroku.com/${{ env.APP_NAME }}/web:latest
+          tags: registry.heroku.com/${{ env.APP_NAME }}/web
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
       - run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      - run: heroku container:release -a $APP_NAME web
