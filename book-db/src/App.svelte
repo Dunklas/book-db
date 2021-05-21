@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Books from './Books.svelte';
+	import Books from "./Books.svelte";
 </script>
 
 <main>
 	<h1>My books</h1>
-	<Books/>
+	<Books />
 </main>
 
 <style>
