@@ -17,4 +17,3 @@
 {#each books as book}
     <Book book={book}/>
 {/each}
-
