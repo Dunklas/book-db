@@ -8,6 +8,7 @@ mod schema;
 
 use rocket::{Rocket, Build};
 use rocket::fairing::AdHoc;
+use rocket::http::Header;
 use rocket_contrib::json::Json;
 use rocket_contrib::databases::{database, diesel as rocket_contrib_diesel};
 use rocket_contrib_diesel::RunQueryDsl;
@@ -64,6 +65,13 @@ async fn main() {
     rocket::build()
         .attach(BookDb::fairing())
         .attach(AdHoc::try_on_ignite("Database migrations", run_db_migrations))
+        .attach(AdHoc::on_response("CORS Headers", |_request, response| {
+            Box::pin(async move {
+                response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+                response.set_header(Header::new("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS"));
+                response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
+            })
+        }))
         .mount("/books", routes![
             create_book,
             get_books,
