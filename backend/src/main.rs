@@ -46,6 +46,9 @@ async fn delete_book(book_id: i32, db: BookDb) {
     }).await;
 }
 
+#[options("/")]
+async fn cors_preflight() {}
+
 async fn run_db_migrations(rocket: Rocket<Build>) -> Result<Rocket<Build>, Rocket<Build>> {
     embed_migrations!();
     let db = BookDb::get_one(&rocket).await
@@ -73,6 +76,7 @@ async fn main() {
             })
         }))
         .mount("/books", routes![
+            cors_preflight,
             create_book,
             get_books,
             delete_book,
