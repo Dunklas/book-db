@@ -1,10 +1,13 @@
 <script lang="ts">
 	import Books from "./Books.svelte";
-	console.log('HELO');
+	import AddBook from "./AddBook.svelte";
 </script>
 
-<main>
+<header>
 	<h1>My books</h1>
+</header>
+<main>
+	<AddBook />
 	<Books />
 </main>
 
@@ -21,6 +24,7 @@
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
+		text-align: center;
 	}
 
 	@media (min-width: 640px) {

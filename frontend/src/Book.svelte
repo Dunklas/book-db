@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type { Book } from './Book';
-    export let book: Book; 
+    import type { Book } from "./Book";
+    export let book: Book;
 </script>
 
-<div>
+<article>
     <h3>{book.title}</h3>
     <p>{book.author}</p>
-</div>
+</article>
