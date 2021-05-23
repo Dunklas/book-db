@@ -1,5 +1,6 @@
 <script lang="ts">
     import { booksStore } from "./stores";
+    import type { Environment } from './Environment';
     import type { Book } from "./Book";
 
     const postBook = async (book: Book): Promise<Book> => {
@@ -15,8 +16,7 @@
     let title = "";
     let author = "";
 
-    let hostname = process.env.BOOKS_HOST;
-    let port = process.env.BOOKS_PORT;
+    let { BOOKS_HOST: hostname, BOOKS_PORT: port } = process.env as Environment;
     const onSubmit = async () => {
         const newBook = await postBook({
             title,

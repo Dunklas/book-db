@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import Book from "./Book.svelte";
     import { booksStore } from "./stores";
+    import type { Environment } from './Environment';
+    import type { Book as IBook } from './Book';
 
-    let hostname = process.env.BOOKS_HOST;
-    let port = process.env.BOOKS_PORT;
+    let { BOOKS_HOST: hostname, BOOKS_PORT: port } = process.env as Environment;
     onMount(async () => {
         const response = await fetch(`${hostname}:${port}/books`).then(
             (response) => response.json()
@@ -12,7 +13,7 @@
         booksStore.update((books) => [...books, ...response]);
     });
 
-    let books;
+    let books: IBook[];
     booksStore.subscribe((newBooks) => {
         books = newBooks;
     });
