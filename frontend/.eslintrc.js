@@ -14,7 +14,8 @@ module.exports = {
   },
   env: {
     es6: true,
-    browser: true
+    browser: true,
+    node: true
   },
   overrides: [
     {
@@ -26,5 +27,5 @@ module.exports = {
     'svelte3/typescript': require('typescript'),
   },
   plugins: ['svelte3', '@typescript-eslint'],
-  ignorePatterns: ['node_modules']
+  ignorePatterns: ['node_modules'],
 }
