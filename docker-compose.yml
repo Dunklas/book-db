@@ -14,3 +14,12 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BOOKS_HOST: http://localhost
+        BOOKS_PORT: 8000
+    ports:
+      - "5000:5000"
+    restart: always
