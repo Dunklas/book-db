@@ -1,0 +1,36 @@
+name: Backend validation
+on: pull_request
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - working-directory: backend
+        run: cargo test
+  integration-test:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: npm install -g wait-port
+      - working-directory: backend
+        run: |
+          ROCKET_ADDRESS=0.0.0.0 \
+          ROCKET_WORKERS=1 \
+          ROCKET_PORT=8000 \
+          ROCKET_DATABASES={book_db={url="postgres://postgres:password@localhost:5432/postgres"}} cargo run &
+      - run: wait-port localhost:8000
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - run: python3 integration_tests.py http://localhost:8000
