@@ -33,4 +33,4 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - run: python3 integration-test.py http://localhost:8000
+      - run: python3 integration_tests.py http://localhost:8000
