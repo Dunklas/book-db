@@ -30,4 +30,7 @@ jobs:
           ROCKET_PORT=8000 \
           ROCKET_DATABASES={book_db={url="postgres://postgres:password@localhost:5432/postgres"}} cargo run &
       - run: wait-port localhost:8000
-      - run: curl --fail localhost:8000/books
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - run: python3 integration-test.py http://localhost:8000
