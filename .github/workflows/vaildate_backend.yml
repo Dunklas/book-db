@@ -19,10 +19,12 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v2
+      - run: npm install -g wait-port
       - working-directory: backend
         run: |
           ROCKET_ADDRESS=0.0.0.0 \
           ROCKET_WORKERS=1 \
           ROCKET_PORT=8000 \
           ROCKET_DATABASES={book_db={url="postgres://postgres:password@localhost:5432/postgres"}} cargo run &
+      - run: wait-port localhost:8000
       - run: curl --fail localhost:8000/books
