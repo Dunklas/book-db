@@ -24,5 +24,5 @@ jobs:
           ROCKET_ADDRESS=0.0.0.0 \
           ROCKET_WORKERS=1 \
           ROCKET_PORT=8000 \
-          ROCKET_DATABASES={book_db={url="postgres://postgres:password@localhost:5432/postgres"}} cargo run
+          ROCKET_DATABASES={book_db={url="postgres://postgres:password@localhost:5432/postgres"}} cargo run &
       - run: curl --fail localhost:8000/books
