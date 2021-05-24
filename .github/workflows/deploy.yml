@@ -24,8 +24,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx
-      - run: |
-          echo $HEROKU_API_KEY | docker login --username=$HEROKU_EMAIL --password-stdin registry.heroku.com
+      - run: echo $HEROKU_API_KEY | docker login --username=$HEROKU_EMAIL --password-stdin registry.heroku.com
       - uses: docker/build-push-action@v2
         with:
           context: backend
@@ -48,6 +47,7 @@ jobs:
         ports:
           - 5432:5432
     steps:
+      - run: echo $HEROKU_API_KEY | docker login --username=$HEROKU_EMAIL --password-stdin registry.heroku.com
       - run: |
           docker run -e PORT=8000 -e DATABASE_URL="postgres://postgres:password@localhost:5432/postgres" \
             -p 8000:8000 \
@@ -56,5 +56,6 @@ jobs:
 
   release-backend:
     runs-on: ubuntu-latest
+    needs: [build-backend, api-test]
     steps:
       - run: heroku container:release -a $APP_NAME web
