@@ -45,17 +45,13 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
-      backend:
-        image: registry.heroku.com/${{ env.APP_NAME }}/web
-        credentials:
-          username: ${{ env.HEROKU_EMAIL }}
-          password: ${{ env.HEROKU_API_KEY }}
-        env:
-          PORT: 8000
-          DATABASE_URL: "postgres://postgres:password@db/postgres"
         ports:
-          - 8000:8000
+          - 5432:5432
     steps:
+      - run: |
+          docker run -e PORT=8000 -e DATABASE_URL="postgres://postgres:password@localhost:5432/postgres" \
+            -p 8000:8000 \
+            registry.heroku.com/$APP_NAME/web
       - run: curl --fail localhost:8000/books
 
   release-backend:
