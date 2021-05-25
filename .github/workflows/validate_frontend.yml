@@ -1,7 +1,10 @@
-name: Validate frontend
-on: pull_request
+name: Frontend validation
+on:
+  pull_request:
+    paths:
+      - frontend
 jobs:
-  validate:
+  validate-frontend:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -14,4 +17,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run test
+      - uses: Dunklas/pr-quote-action@v1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
   
