@@ -22,3 +22,6 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run test
+      - uses: Dunklas/pr-quote-action@v1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
