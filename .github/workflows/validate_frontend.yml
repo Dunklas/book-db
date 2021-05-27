@@ -13,9 +13,4 @@ jobs:
       - run: npm run test
       - uses: Dunklas/pr-quote-action@v1.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN}}
-
-  frontend-lint:
-    
-  frontend-test:
-
+          github-token: ${{ secrets.GITHUB_TOKEN }}
