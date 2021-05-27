@@ -9,14 +9,14 @@ mod schema;
 use rocket::{Rocket, Build};
 use rocket::fairing::AdHoc;
 use rocket::http::Header;
-use rocket_contrib::json::Json;
-use rocket_contrib::databases::{database, diesel as rocket_contrib_diesel};
-use rocket_contrib_diesel::RunQueryDsl;
+use rocket::serde::json::Json;
+use rocket_sync_db_pools::{database, diesel as rocket_diesel};
+use rocket_sync_db_pools::diesel::RunQueryDsl;
 use diesel::prelude::*;
 use schema::books::dsl::*;
 
 #[database("book_db")]
-struct BookDb(rocket_contrib_diesel::PgConnection);
+struct BookDb(rocket_diesel::PgConnection);
 
 #[post("/", format = "application/json", data = "<book>")]
 async fn create_book(book: Json<NewBook>, db: BookDb) -> Json<Book> {
