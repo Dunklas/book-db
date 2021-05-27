@@ -10,7 +10,7 @@ test("should render book", () => {
   };
   const results = render(Book, { props: { book } });
 
-  expect(() => results.getByText('House on the Borderlandz')).not.toThrow();
+  expect(() => results.getByText('House on the Borderland')).not.toThrow();
   expect(() => results.getByText('William Hope Hodgson')).not.toThrow();
   expect(() => results.getByText(1)).toThrow();
 });
