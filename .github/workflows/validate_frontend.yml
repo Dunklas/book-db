@@ -3,8 +3,10 @@ on: pull_request
 jobs:
   frontend-validation:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v2
-      - run: cd frontend
       - run: npm run lint
       - run: npm run test
